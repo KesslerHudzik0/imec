@@ -1,0 +1,8 @@
+body {margin:0;padding:0; width:100vh; height:200vh; font-family:monospace; font-size:0.75rem;}
+canvas {position:fixed;left:0;top:0;margin:0;padding:0;background:black;cursor:crosshair;}
+label {display:inline-block;width:20%;height:0.75rem;}
+label.forCB {display:inline-block;width:auto;height:0.75rem;}
+input[type="range"]   {display:inline-block;width:75%;height:0.75rem;vertical-align: middle;}
+input[type="checkbox"] {display:inline-block;width:auto;height:0.75rem;vertical-align: middle;padding:0;margin:0;}
+#controls {position:fixed;left:0;top:0;color:white;width:100vh;height:auto;z-index:1;padding:8px;background-color:#0009;}
+#statusDiv {position:fixed;left:0;bottom:0;color:white;width:100vh;height:auto;z-index:1;padding:8px;background-color:#0009;white-space:pre;}

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <link rel="stylesheet" href="gl2d.css">
+</head>
+<body>
+  <div id="controls">
+    <label id="labelframeskip" for="sliderframeskip">Frameskip</label>
+    <input id="sliderframeskip" type="range" min="0" max="100" step="1" value="20"><br>
+    <label id="labelB" for="sliderB">Field B</label>
+    <input id="sliderB" type="range" min="-50" max="50" step=".1" value="0.0"><br>
+    <label id="labelT" for="sliderT">Thermostat T</label>
+    <input id="sliderT" type="range" min="4.00" max="16.00" step="0.01" value="11.00"><br>
+    <label id="labelTMeter">Thermometer T</label>
+    <input id="sliderTMeter" type="range" min="4.00" max="16.00" step="0.01" value="11.00"><br>
+    <button id="button1">Bare film</button>
+    <button id="button2">Strips</button>
+    <button id="button3">Rings</button>
+    <button id="button4">Moats</button>
+    <button id="button5">Notched rings</button>
+    <label class="forCB" for="cbWF">Wavefunction</label>
+    <input type="checkbox" id="cbWF" name="cbWF" checked />
+    <label class="forCB" for="cbVort">Vorticity</label>
+    <input type="checkbox" id="cbVort" name="cbVort" checked />
+    </div>
+  </div>
+  <div id="statusDiv">Status bar</div>
+    
+  <canvas id="canvas"></canvas>
+
+  <script type="module" src="gl2d.js"></script>
+
+</body>
+</html>

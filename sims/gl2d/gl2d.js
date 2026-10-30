@@ -68,7 +68,7 @@ class Vortex {
 
 class Insulator {
     constructor(x0,x1,y0,y1) {
-        this.vortices = [];
+        this.vortices = 0;
         this.x0 = x0;
         this.x1 = x1;
         this.y0 = y0;
@@ -276,9 +276,9 @@ function animate(timeCurrent) {
     if (cbVort.checked) {
         findVorticity();
         insulators.forEach( (element, index, array) => {
-            element.vortices = [];
+            element.vortices = 0;
         });
-        ctx.lineWidth=.4; ctx.strokeStyle='#FFFFFF'
+        ctx.lineWidth=.4; ctx.strokeStyle='#FFFFFF';
         for (let x=1; x<X-1; ++x) for (let y=1; y<Y-1; ++y) {const i=x+X*y
             if (Tc[i]<0) {
                 ctx.globalAlpha = 1.
@@ -288,8 +288,8 @@ function animate(timeCurrent) {
                 insulators.forEach( (element, index, array) => {
 
                     if (isInsideInsulator(element,x,y)) {
-                        if (Omega[i] > 0) element.vortices.push(new Vortex(x,y,1))
-                        else if (Omega[i] < 0) element.vortices.push(new Vortex(x,y,-1))
+                        if (Omega[i] > 0) element.vortices += 1
+                        else if (Omega[i] < 0) element.vortices -= 1
                     }
                 })
 
@@ -332,7 +332,7 @@ function animate(timeCurrent) {
     ctx.textBaseline = 'middle';
 
     insulators.forEach( (element, index, array) => {
-        let sum = sumVorticesInInsulator(element).toString();
+        let sum = element.vortices;
 
         let x = ((element.x1 - element.x0) / 2) + element.x0;
         let y = ((element.y1 - element.y0) / 2) + element.y0;
@@ -363,6 +363,13 @@ function resize() {
     canvas.width=visualViewport.width||window.innerWidth||document.documentElement.clientWidth||document.body.clientWidth
     canvas.height=visualViewport.height||window.innerHeight||document.documentElement.clientHeight||document.body.clientHeight
 }
+
+function dumpVars() {
+    // Modify for whatever suits your needs. Originally envisioned as creating a text dump of python-readable data
+        // But for now this is used to bugtest the moats
+    console.log(insulators); // Shows weird behavior, timestep 0 causes value in insulator vortex count to still change
+}
+
 //================ MAIN CODE
 document.body.addEventListener('dblclick', function (e) { e.preventDefault() })
 window.visualViewport.addEventListener('resize', resize)
@@ -425,6 +432,10 @@ button5.addEventListener('click', (e)=>{
     addEllipse  (x2+b, .5*Y, .02*X, .03*Y, 4*nm, 400*nm, -14*Kelvin) // notch
     setB(); setT(); initWF(); setMisc(); resize();}
 )
+
+document.querySelector('#var-dump').addEventListener('click', (e)=>{
+    dumpVars();
+})
 
 
 let mouseX=-1,mouseY=-1;

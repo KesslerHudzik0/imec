@@ -280,7 +280,7 @@ function animate(timeCurrent) {
         });
         ctx.lineWidth=.4; ctx.strokeStyle='#FFFFFF'
         for (let x=1; x<X-1; ++x) for (let y=1; y<Y-1; ++y) {const i=x+X*y
-            if (wx[i]===0||wy[i]===0) {
+            if (Tc[i]<0) {
                 ctx.globalAlpha = 1.
                 ctx.fillStyle='#666666'  // gray moat
                 ctx.fillRect(x,y,1,1)

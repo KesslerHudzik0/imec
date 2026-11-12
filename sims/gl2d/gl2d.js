@@ -56,6 +56,7 @@ const p=new Float32Array(I),q=new Float32Array(I)
 const theta=new Float32Array(I),Omega=new Float32Array(I)
 const Kx=new Float32Array(I),Ky=new Float32Array(I) // currents or dummies
 let insulators = [];
+let regions = [];
 
 //==== Structs for repetitive data types
 class Vortex {
@@ -66,6 +67,7 @@ class Vortex {
     }
 }
 
+// TODO: format such that this extends region
 class Insulator {
     constructor(x0,x1,y0,y1) {
         this.vortices = 0;
@@ -73,6 +75,17 @@ class Insulator {
         this.x1 = x1;
         this.y0 = y0;
         this.y1 = y1;
+    }
+}
+
+class Region {
+    constructor(x0,x1,y0,y1) {
+        this.x0 = x0;
+        this.x1 = x1;
+        this.y0 = y0;
+        this.y1 = y1;
+
+        this.quantity = 0; // Generic amount, intended to be swapped out for whatever is necessary
     }
 }
 
@@ -100,8 +113,17 @@ function addInsulator(newInsulator) {
     }
     insulators.push(newInsulator);
 }
+function addRegion(newRegion) {
+    if (!newRegion instanceof Region) {
+        return;
+    }
+    regions.push(newRegion);
+}
 function clearInsulators() {
     insulators = [];
+}
+function clearRegions() {
+    regions = [];
 }
 function sumVorticesInInsulator(insulator) {
     if (!insulator instanceof Insulator) {
@@ -118,6 +140,12 @@ function isInsideInsulator(insulator,x,y) {
         return false;
     }
     return (x > insulator.x0 && y > insulator.y0 && x < insulator.x1 && y < insulator.y1);
+}
+function isInsideRegion(region, x,y){
+    if (!region instanceof Region) {
+        return false;
+    }
+    return (x > region.x0 && y > region.y0 && x < region.x1 && y < region.y1);
 }
 function bcsGapEquation(ToverTc) {
     const xi=[0., 0.0954915, 0.345492, 0.654508, 0.904508, 1.]
@@ -293,18 +321,17 @@ function animate(timeCurrent) {
                     }
                 })
 
+                regions.forEach( (element, index, array) => {
+
+                    if (isInsideRegion(element,x,y)) {
+                        if (Omega[i] > 0) element.quantity += 1
+                        else if (Omega[i] < 0) element.quantity -= 1
+                    }
+                })
 
                 continue   // do not draw vortex inside an insulator
 
 
-
-                /**
-                 * PLAN: Create a vortex counter which is contained within an insulator class
-                 *       Maybe keep an exact count of each through a specific JSON object format,
-                 *             which keeps the location and value of each vortex and has a counting function on the prototype
-                 *             Then update the list in this loop, and after loop, draw the numbers
-                 *
-                 */
             }
 
             ctx.globalAlpha = Math.min(1, Math.abs(2.12*Omega[i]))
@@ -338,6 +365,16 @@ function animate(timeCurrent) {
         let y = ((element.y1 - element.y0) / 2) + element.y0;
 
         ctx.fillText(sum, x * pixScale, (y + 5) * pixScale);
+    })
+
+    regions.forEach( (element, index, array) => {
+
+        let x = ((element.x1 - element.x0) / 2) + element.x0;
+        let y = ((element.y1 - element.y0) / 2) + element.y0;
+
+        ctx.fillText(element.quantity, x * pixScale, (y + 5) * pixScale);
+
+        element.quantity = 0;
     })
 
 
@@ -382,6 +419,7 @@ button1.addEventListener('click', (e)=>{
     clearInsulators();
     // addRectangle(-1, -1, X, Y,       4*nm, 400*nm, -14*Kelvin)  // insulating substrate by default!
     addRectangle(-1, -1,  X, Y,       4*nm, 400*nm, +14*Kelvin)  // NbTiN everywhere
+    addRegion(new Region(0, canvas.width, 0, canvas.height))
     setB(); setT(); initWF(); setMisc(); resize();}
 )
 button2.addEventListener('click', (e)=>{
